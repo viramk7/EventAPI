@@ -26,6 +26,7 @@ router.post('/Login', function (req, res, next) {
             
             if (error){
                 res.json({success: false, message: 'Something went wrong'});
+                return;
             } 
             
             if(results.length <= 0){
@@ -49,11 +50,55 @@ router.post('/Signup', function (req, res, next) {
 
     try {
 
-        var isValid = validateSignup(req);
+        let signupBody = {
+             email : req.body.email || '',
+             password : req.body.password || '',
+             usertype : req.body.usertype || '',
+             name : req.body.name || '',
+             password : req.body.password || '123',
+        }
 
-        res.json({success: isValid.success, message: isValid.message});
+        let validation = validateSignup(signupBody);
+        if(!validation.success){
+            res.json({success: validation.success, message: validation.message});
+        }
+        
+        let query = "INSERT INTO `users` (`user_type`,`name`,`email`,`password`,`created_at`)" + 
+                    "VALUES (?,?,?,?,?)";
+        
+        let values = [ 
+            signupBody.usertype, 
+            signupBody.name,
+            signupBody.email,
+            signupBody.password,
+            new Date()
+         ];
 
+         connection.query(query, values, function (error, results, fields) {
+            
+            if (error){
+                console.log(error);
+                if(error.code == 'ER_DUP_ENTRY'){
+                    res.json({success: false, message: 'Duplicate entry.' });
+                    return    
+                }
 
+                res.json({success: false, message: 'Something went wrong. ' + error});
+                return;
+            } 
+            
+            console.log(results);
+
+            if(results.affectedRows <= 0){
+                res.json({success: false, message: 'could not save data.'});
+                return;
+            }else{
+                res.json({success: true, message: 'record saved successfully.', data: []});
+                return;
+            }
+        });
+
+        
     } catch (error) {
         res.json({success: false, message: 'Error:' + error});
     } finally{
@@ -62,12 +107,12 @@ router.post('/Signup', function (req, res, next) {
 
 });
 
-function validateSignup(req){
+function validateSignup(data){
    
-    var email = req.body.email || '';
-    var password = req.body.password || '';
-    var usertype = req.body.usertype || '';
-    var name = req.body.name || '';
+    var email = data.email || '';
+    var password = data.password || '';
+    var usertype = data.usertype || '';
+    var name = data.name || '';
 
     // VALIDATIONS
 
