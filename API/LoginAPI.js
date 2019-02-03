@@ -1,59 +1,46 @@
 var express = require('express');
+var mysql = require('mysql');
 var router = express.Router();
 var app = express();
-var server = require('./Connectionconfig');
+var config = require('./Connectionconfig');
 
 
-// var mysql      = require('mysql');
-// var connection = mysql.createConnection({
-//   host     : 'localhost',
-//   port: 80,
-//   user     : 'root',
-//   password : '',
-//   database : 'event'
-// });
-
-
-router.get('/pagenotfound', function (req, res, next) {
-    console.log(1);
+router.post('/Login', function (req, res, next) {
    
-});
+    let connection = mysql.createConnection(config);
 
-router.get('/Login', function (req, res, next) {
-    //console.log(req);
-   // var User = req.body;
-
-  
-    console.log("sdgsigsjh");
-
-
-    connection.connect();
- 
-connection.query('SELECT * from users', function (error, results, fields) {
-  if (error) throw error;
-  console.log('The solution is: ', results[0]);
-});
- 
-connection.end();
-    // connection.connect(function (err) {
-
-    //     if(err)
-    //     {
-    //        console.log("Connection error");
-    //     }
-    //     //connection.end();
-    //     var sql = "select * from users";
-
-    //     connection.query( sql, function (error, results, fields) {
-    //         console.log("In COnnection");
-    //         //console.log(error.code); // 'ECONNREFUSED'
-    //         //console.log(error.fatal); // true
-    //         console.log(results);
-
-    //       });
+    try {
+        
+        let query = "SELECT id, user_type, name, email, email_verified_at, status, remember_token FROM `users` WHERE (email = ? OR name = ?) AND `password` = ?;";
     
-    // });
+        let userName = req.body.username;
+        let pwd = req.body.password;
+
+        if(userName === undefined || pwd == undefined){
+            res.json({success: false, message: 'invalid data sent'});
+        }
+
+        connection.query(query,[userName,userName,pwd], function (error, results, fields) {
+            
+            if (error){
+                res.json({success: false, message: 'Something went wrong'});
+            } 
+            
+            if(results.length <= 0){
+                res.json({success: false, message: 'Invalid username or password.'});
+            }else{
+                res.json({success: true, message: 'success', data: results[0]});
+            }
+        });
+
+    } catch (error) {
+        res.json({success: false, message: 'Error'});
+    } finally{
+        connection.end();
+    }
 
 });
+ 
+
 module.exports = router;
 

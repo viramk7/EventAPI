@@ -185,7 +185,7 @@ app.listen(3000, "0.0.0.0", function() {
 // });
 // }
 
-connectionconfig.makeConnection();
+// connectionconfig.makeConnection();
 
 module.exports = app;
 
