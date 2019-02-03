@@ -87,8 +87,6 @@ router.post('/Signup', function (req, res, next) {
                 return;
             } 
             
-            console.log(results);
-
             if(results.affectedRows <= 0){
                 res.json({success: false, message: 'could not save data.'});
                 return;
