@@ -13,7 +13,7 @@ router.post('/Login', function (req, res, next) {
 
     try {
         
-        let query = "SELECT id, user_type, name, email, email_verified_at, status, remember_token FROM `users` WHERE (email = ? OR name = ?) AND `password` = ?;";
+        let query = "SELECT id, user_type, name, email, email_verified_at, status, remember_token FROM `users` WHERE (email = ? OR name = ?) AND BINARY `password` = ?;";
     
         let userName = req.body.username;
         let pwd = req.body.password;
