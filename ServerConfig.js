@@ -101,15 +101,6 @@ app.use(expressValidator());
 app.use(session({ secret: 'sit@123', cookie: { maxAge: (12000 * 1000) } }));
 
 
-
-
-
-
-//app.use(function (req, res, next) {
-//    res.setHeader("Content-Security-Policy", "script-src 'self' https://apis.google.com");
-//    return next();
-//});
-
 //CORS middleware
 var allowCrossDomain = function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -120,20 +111,13 @@ var allowCrossDomain = function (req, res, next) {
     next();
 
 }
-app.use(allowCrossDomain);
 
+app.use(allowCrossDomain);
 
 // routes 
 
-
 var LoginService = require('./API/LoginAPI');
-
-
-
-
 app.use('/', LoginService);
-
-
 
 // catch 404 and forward to error handler
 
@@ -149,43 +133,9 @@ process.on('uncaughtException', function (err) {
     console.log("Node NOT Exiting...");
   });
 
-
-// error handlers
-// development error handler
-// will print stacktrace
-// production error handler
-// no stacktraces leaked to user
-
 app.listen(3000, "0.0.0.0", function() {
     console.log('listening on 3000');
 });
-//app.use(fileUpload());
-// constMongoClient = require('mongodb').MongoClient;
-// MongoClient.connect('mongodb://192.168.1.145:27017/AssetManagement', function(err, database) {
-//     if (err) return console.log(err);
-//     db = database;
-// });
-
-// connection = mysql.createConnection({
-//     host: '192.168.1.61', //localhost
-//     user: 'sit',//sit
-//     password: 'sit@12345', //sit@123456
-//     database: 'codemanagement',
-//     multipleStatements: true
-// });
-
-// function MakeConnection()
-// {
-//     connection = mysql.createConnection({
-//     host: '192.168.1.61', //localhost
-//     user: 'sit',//sit
-//     password: 'sit@12345', //sit@123456
-//     database: 'codemanagement',
-//     multipleStatements: true
-// });
-// }
-
-// connectionconfig.makeConnection();
 
 module.exports = app;
 
