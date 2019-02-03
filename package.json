@@ -1,0 +1,46 @@
+{
+  "name": "AssetManagement",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ServerConfig.js"
+  },
+  "dependencies": {
+    "archiver": "^2.0.3",
+    "body-parser": "~1.15.1",
+    "browserchannel": "^2.1.0",
+    "chart.js": "^2.7.0",
+    "connect": "^2.30.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "ejs": "~2.4.1",
+    "express": "^4.13.4",
+    "express-flash": "0.0.2",
+    "express-flash-notification": "^0.4.0",
+    "express-session": "^1.15.5",
+    "express-validator": "^4.1.1",
+    "file-diff-parser": "0.0.1",
+    "finalhandler": "^1.1.0",
+    "formidable": "^1.1.1",
+    "hogan": "^1.0.2",
+    "mkdirp": "^0.5.1",
+    "mongodb": "^2.1.18",
+    "mongoose": "^4.11.11",
+    "morgan": "~1.7.0",
+    "mustache": "^2.2.1",
+    "mysql": "^2.14.1",
+    "nodemailer": "^4.1.2",
+    "nodemailer-smtp-transport": "^2.7.4",
+    "promise": "^8.0.1",
+    "sequence": "^3.0.0",
+    "serve-favicon": "~2.3.0",
+    "setprototypeof": "^1.1.0",
+    "share": "^0.6.3",
+    "swig": "^1.4.2",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
