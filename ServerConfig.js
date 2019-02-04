@@ -10,8 +10,7 @@ var mysql = require('mysql');
 var engines = require('ejs');
 var expressValidator = require("express-validator");
 var session = require('express-session');
-var underscore = require('underscore');
-var connectionconfig = require('./API/Connectionconfig');
+
 
 //--------- my code----------
 var needtocheck = false;
