@@ -1,4 +1,6 @@
-var mysql = require('mysql');
+const mysql = require('mysql');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 var config = require('../Connectionconfig');
 var { validateLogin, validateSignup } = require('../Validation/login.validation');
@@ -10,6 +12,12 @@ module.exports = function loginController() {
         let connection = mysql.createConnection(config);
 
         try {
+
+
+            // SEE HERE
+            var hash = '$2b$10$FhVDPVJ28RegqKgIucln7.7IlKogMbpBpT80Aw/10FjAzs6fXjVtO';
+            var isValid = bcrypt.compareSync(req.body.password, hash); 
+            console.log('isValid: ' + isValid);
 
             let query = "SELECT id, user_type, name, email, email_verified_at, status, remember_token" +
                 "FROM `users`" +
@@ -56,9 +64,14 @@ module.exports = function loginController() {
                 password: req.body.password || '',
                 usertype: req.body.usertype || '',
                 name: req.body.name || '',
-                password: req.body.password || '123',
-            }
-    
+                password: req.body.password || '',
+            };
+
+            // SEE HERE
+            var hash = bcrypt.hashSync(signupBody.password, saltRounds);
+            console.log('hash: ' + hash);
+
+
             let validation = validateSignup(signupBody);
             if (!validation.success) {
                 res.json({ success: validation.success, message: validation.message });
