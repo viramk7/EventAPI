@@ -19,7 +19,8 @@ module.exports = function loginController() {
             // var isValid = bcrypt.compareSync(req.body.password, hash); 
             // console.log('isValid: ' + isValid);
 
-            let query = "SELECT id, user_type, name, email, email_verified_at, status, remember_token" +
+            // let query = "SELECT `id`, user_type, name, email, email_verified_at, status, remember_token" +
+            let query = "SELECT *" +
                 "FROM `users`" +
                 "WHERE (email = ? OR name = ?) AND BINARY `password` = ?;";
 
