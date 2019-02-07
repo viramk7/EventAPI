@@ -7,30 +7,30 @@ module.exports = {
     // 1 lower case
     // 1 special character
     // 1 digit
-    isValidatePassword : function (password){
-        
+    isValidatePassword: function (password) {
+
         // 8 - 10 length
-        if(password.length < 8 || password.length > 10){
+        if (password.length < 8 || password.length > 10) {
             return false;
         }
 
         // lower case
-        if(! (/[a-z]/.test(password))){
+        if (!(/[a-z]/.test(password))) {
             return false;
         };
 
         // upper case
-        if(!(/[A-Z]/.test(password))){
+        if (!(/[A-Z]/.test(password))) {
             return false;
         };
 
         // digit
-        if(!(/\d/.test(password))){
+        if (!(/\d/.test(password))) {
             return false;
         }
 
         let format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-        if(!format.test(password)){
+        if (!format.test(password)) {
             return false;
         }
 
@@ -38,13 +38,25 @@ module.exports = {
     },
 
     // 0 - guest, 1- venue , 2-promoter
-    isValidateUserType: function (usertype){
-        let validUserTypes = ['0','1','2'];
+    isValidateUserType: function (usertype) {
+        let validUserTypes = ['0', '1', '2'];
         return validUserTypes.indexOf(usertype) >= 0
-    }
+    },
 
+    getJsonResult: function (success, msg, data) {
+
+        let result = [];
+
+        if (data != null && data != undefined)
+            result.push(data);
+
+        return {
+            status: success,
+            message: msg,
+            result
+        }
+    }
 
 };
 
 
- 

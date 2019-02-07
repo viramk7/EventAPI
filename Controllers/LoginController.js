@@ -2,8 +2,9 @@ const mysql = require('mysql');
 //const bcrypt = require('bcrypt');
 //const saltRounds = 10;
 
-var config = require('../Connectionconfig');
-var { validateLogin, validateSignup } = require('../Validation/login.validation');
+const config = require('../Connectionconfig');
+const { validateLogin, validateSignup } = require('../Validation/login.validation');
+const { getJsonResult } = require('../Common/Utility');
 
 module.exports = function loginController() {
 
@@ -28,26 +29,32 @@ module.exports = function loginController() {
             let pwd = req.body.password;
 
             if (!validateLogin(userName, pwd)) {
-                res.json({ success: false, message: 'invalid data sent' });
+                res.json(getJsonResult(0, 'Data is invalid.'));
                 return;
             }
 
             connection.query(query, [userName, userName, pwd], function (error, results, fields) {
 
                 if (error) {
-                    res.json({ success: false, message: 'Something went wrong.' + error });
+                    res.json(getJsonResult(0, 'Something went wrong.'));
                     return;
                 }
 
                 if (results.length <= 0) {
-                    res.json({ success: false, message: 'Invalid username or password.' });
+                    res.json(getJsonResult);
                 } else {
-                    res.json({ success: true, message: 'success', data: results[0] });
+                    let userData = {
+                        id: results[0].id,
+                        name: results[0].name,
+                        email: results[0].email,
+                        user_type: results[0].user_type,
+                    }
+                    res.json(getJsonResult(1, 'You have been logged in successfully.', userData));
                 }
             });
 
         } catch (error) {
-            res.json({ success: false, message: 'Error' });
+            res.json(getJsonResult(0, 'Something went wrong.'));
         } finally {
             connection.end();
         }
@@ -57,9 +64,9 @@ module.exports = function loginController() {
     function signup(req, res, next) {
 
         let connection = mysql.createConnection(config);
-    
+
         try {
-    
+
             let signupBody = {
                 email: req.body.email || '',
                 password: req.body.password || '',
@@ -75,12 +82,13 @@ module.exports = function loginController() {
 
             let validation = validateSignup(signupBody);
             if (!validation.success) {
-                res.json({ success: validation.success, message: validation.message });
+                let status = validation.success ? 1 : 0;
+                res.json(getJsonResult(status,validation.message));
             }
-    
+
             let query = "INSERT INTO `users` (`user_type`,`name`,`email`,`password`,`created_at`)" +
                 "VALUES (?,?,?,?,?)";
-    
+
             let values = [
                 signupBody.usertype,
                 signupBody.name,
@@ -88,36 +96,42 @@ module.exports = function loginController() {
                 signupBody.password,
                 new Date()
             ];
-    
+
             connection.query(query, values, function (error, results, fields) {
-    
+
                 if (error) {
                     console.log(error);
                     if (error.code == 'ER_DUP_ENTRY') {
-                        res.json({ success: false, message: 'Duplicate entry.' });
+                        res.json(getJsonResult(0, 'The record you entered is already in our database.'));
                         return
                     }
-    
-                    res.json({ success: false, message: 'Something went wrong. ' + error });
+
+                    res.json(getJsonResult(0, 'Something went wrong.'));
                     return;
                 }
-    
+
                 if (results.affectedRows <= 0) {
-                    res.json({ success: false, message: 'could not save data.' });
+                    res.json(getJsonResult(0, 'Could not save record.'));
                     return;
                 } else {
-                    res.json({ success: true, message: 'record saved successfully.', data: [] });
+                    var userData = {
+                        id: results.insertId,
+                        user_type: signupBody.usertype,
+                        name: signupBody.name,
+                        email: signupBody.email,
+                    }
+                    res.json(getJsonResult(1, 'User Registration Successfully. Please Login with your credentials.',userData));
                     return;
                 }
             });
-    
-    
+
+
         } catch (error) {
-            res.json({ success: false, message: 'Error:' + error });
+            res.json(getJsonResult(0, 'Something went wrong.'));
         } finally {
             connection.end();
         }
-    
+
     }
 
     return {

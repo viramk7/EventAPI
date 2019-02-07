@@ -1,12 +1,13 @@
 const mysql = require('mysql');
-var formidable = require('formidable');
+const formidable = require('formidableconst');
 
-var config = require('../Connectionconfig');
-var { validateAddVenueData } = require('../Validation/VenueValidation');
+const config = require('../Connectionconfig');
+const { validateAddVenueData } = require('../Validation/VenueValidation');
+const { getJsonResult } = require('../Common/Utility');
 
 module.exports = function venueController() {
 
-    function addVenue(req, res, next) {
+    function venueprofile(req, res, next) {
 
         let connection = mysql.createConnection(config);
 
@@ -20,7 +21,8 @@ module.exports = function venueController() {
 
                 let validation = validateAddVenueData(addVenueData);
                 if (!validation.success) {
-                    res.json({ success: validation.success, message: validation.message });
+                    let status = validation.success ? 1 : 0;
+                    res.json(getJsonResult(status,validation.message));
                 }
 
                 let query = "INSERT INTO `venue_profiles` (`venue_id`,`name`,`phone`,`dress_code`,`capacity`," +
@@ -41,19 +43,19 @@ module.exports = function venueController() {
                     if (error) {
 
                         if (error.code == 'ER_DUP_ENTRY') {
-                            res.json({ success: false, message: 'Duplicate entry.' });
+                            res.json(getJsonResult(0, 'The record you entered is already in our database.'));
                             return
                         }
 
-                        res.json({ success: false, message: 'Something went wrong.' + error });
+                        res.json(getJsonResult(0, 'Something went wrong.'));
                         return;
                     }
 
                     if (results.affectedRows <= 0) {
-                        res.json({ success: false, message: 'could not save data.' });
+                        res.json(getJsonResult(0, 'Could not save record.'));
                         return;
                     } else {
-                        res.json({ success: true, message: 'record saved successfully.', data: [] });
+                        res.json(getJsonResult(1,'Venue profile added successfully, your data is securely store with our system'));
                         return;
                     }
                 });
@@ -61,18 +63,15 @@ module.exports = function venueController() {
 
             form.on('end', function (err) {
                 connection.end();
-                console.log("END");
             });
-
 
             form.on('error', function (err) {
                 connection.end();
-                console.log("error: " + error);
             });
 
 
         } catch (error) {
-            res.json({ success: false, message: 'Error: ' + error });
+            res.json(getJsonResult(0, 'Something went wrong.'));
         } finally {
             // connection.end();
         }
@@ -100,7 +99,7 @@ module.exports = function venueController() {
     }
 
     return {
-        addVenue,
+        venueprofile,
     }
 
 }
