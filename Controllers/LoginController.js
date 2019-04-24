@@ -134,9 +134,14 @@ module.exports = function loginController() {
 
     }
 
+    function test(req, res, next) {
+        res.json(getJsonResult(1, 'test successful..', []));
+    }
+
     return {
         login,
-        signup
+        signup,
+        test
     };
 
 };

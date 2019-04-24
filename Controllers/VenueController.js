@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-const formidable = require('formidableconst');
+const formidable = require('formidable');
 
 const config = require('../Connectionconfig');
 const { validateAddVenueData } = require('../Validation/VenueValidation');

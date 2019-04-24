@@ -121,6 +121,9 @@ app.use('/', LoginService);
 var VenueService = require('./API/VenueAPI');
 app.use('/', VenueService);
 
+var MongoDbDemo = require('./API/MongoDbDemo.js');
+app.use('/', MongoDbDemo);
+
 // catch 404 and forward to error handler
 
 app.use(function(req, res, next) {
